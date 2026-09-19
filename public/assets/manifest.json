@@ -1,0 +1,351 @@
+{
+  "pack": "Super Trasa",
+  "asset_count": 69,
+  "files": [
+    {
+      "name": "bulldozer.png",
+      "size": "384x384",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "car_city.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "cmd_connect.png",
+      "size": "96x96",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "cmd_crane_up.png",
+      "size": "96x96",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "cmd_pick.png",
+      "size": "96x96",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "cmd_place.png",
+      "size": "96x96",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "cmd_turn.png",
+      "size": "96x96",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "cmd_wait_gate.png",
+      "size": "96x96",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "driver_astronaut.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "driver_bee_brick.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "driver_cat.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "driver_cube_critter.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "driver_dino.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "driver_dog.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "driver_duck.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "driver_firefighter.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "driver_fox.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "driver_knight.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "driver_mechanic.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "driver_miner_blue.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "driver_miner_teal.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "driver_ninja.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "driver_owl.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "driver_panda.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "driver_pirate.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "driver_queen.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "driver_snow_brick.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "driver_tall_shadow.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "driver_unicorn.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "driver_wizard.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "gate_rail.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "gokart_blue.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "gokart_red.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "mix_body_1.png",
+      "size": "192x192",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "mix_body_2.png",
+      "size": "192x192",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "mix_body_3.png",
+      "size": "192x192",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "mix_body_4.png",
+      "size": "192x192",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "mix_face_1.png",
+      "size": "192x192",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "mix_face_2.png",
+      "size": "192x192",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "mix_face_3.png",
+      "size": "192x192",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "mix_face_4.png",
+      "size": "192x192",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "mix_helm_1.png",
+      "size": "192x192",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "mix_helm_2.png",
+      "size": "192x192",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "mix_helm_3.png",
+      "size": "192x192",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "mix_helm_4.png",
+      "size": "192x192",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "passenger_bat_helmet.png",
+      "size": "128x128",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "passenger_explorer.png",
+      "size": "128x128",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "passenger_kart_helmet.png",
+      "size": "128x128",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "passenger_robot.png",
+      "size": "128x128",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "passenger_round_critter.png",
+      "size": "128x128",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "passenger_spider_cap.png",
+      "size": "128x128",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "road_straight.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "station_batcave.png",
+      "size": "384x384",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "station_poke_woods.png",
+      "size": "384x384",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "station_rainbow_loop.png",
+      "size": "384x384",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "station_spidey_hq.png",
+      "size": "384x384",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "station_tv.png",
+      "size": "384x384",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "tab_animals.png",
+      "size": "96x96",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "tab_cubes.png",
+      "size": "96x96",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "tab_minifigs.png",
+      "size": "96x96",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "tab_mix.png",
+      "size": "96x96",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "track_buffer.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "track_crossing.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "track_curve.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "track_straight.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "train_engine.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "wagon_blue.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "wagon_red.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    },
+    {
+      "name": "wagon_yellow.png",
+      "size": "256x256",
+      "format": "transparent PNG"
+    }
+  ]
+}
