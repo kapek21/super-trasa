@@ -195,12 +195,79 @@ button {
 
 .cmd.is-slot {
   background: var(--blue);
-  opacity: 0.7;
+  opacity: 0.55;
+}
+
+.cmd.is-done {
+  outline: 3px solid var(--yellow);
+}
+
+.cmd.is-now {
+  transform: scale(1.08);
+}
+
+.cmd.is-hint {
+  box-shadow: 0 0 0 4px var(--yellow);
+  background: var(--yellow);
+}
+
+.cmd.play {
+  background: var(--green);
+  color: var(--ink);
+  font-size: 36px;
+}
+
+.cmd.play:disabled {
+  opacity: 0.4;
 }
 
 .cmd.undo {
   background: var(--red);
   color: var(--white);
+}
+
+.goal-tag {
+  margin: 0;
+  text-align: center;
+  font-size: 32px;
+}
+
+.fail-banner {
+  margin: 0;
+  text-align: center;
+  font-size: 40px;
+}
+
+.cell.is-hole {
+  background: #181028;
+  opacity: 0.55;
+}
+
+.cell.is-goal {
+  box-shadow: 0 0 0 3px var(--yellow);
+}
+
+.ride-html.is-crash {
+  background: linear-gradient(180deg, #e40058 0%, #78c8f8 100%);
+}
+
+.loco.is-crash {
+  animation: fall 0.6s forwards;
+}
+
+.kart-preview.is-crash {
+  filter: saturate(0.4);
+}
+
+.fail-face {
+  font-size: 40px;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(40px) rotate(24deg);
+    opacity: 0.2;
+  }
 }
 
 .is-shake {

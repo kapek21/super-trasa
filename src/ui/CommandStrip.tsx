@@ -4,33 +4,65 @@ import { AssetImg } from './AssetImg';
 interface Props {
   bank: CommandId[];
   strip: CommandId[];
-  expected: CommandId;
-  shake: boolean;
-  onTry(cmd: CommandId): void;
+  shake?: boolean;
+  hint?: CommandId | null;
+  cursor?: number;
+  running?: boolean;
+  playEnabled: boolean;
+  onAdd(cmd: CommandId): void;
   onUndo(): void;
+  onPlay(): void;
 }
 
-export function CommandStrip({ bank, strip, expected, shake, onTry, onUndo }: Props): JSX.Element {
+export function CommandStrip({
+  bank,
+  strip,
+  shake,
+  hint,
+  cursor = 0,
+  running,
+  playEnabled,
+  onAdd,
+  onUndo,
+  onPlay,
+}: Props): JSX.Element {
   return (
     <div className="program">
-      <div className={`strip ${shake ? 'is-shake' : ''}`}>
+      <div className={`strip ${shake ? 'is-shake' : ''}`} aria-label="program">
         {strip.map((id, i) => (
-          <div key={`${id}-${i}`} className="cmd is-placed">
+          <div
+            key={`${id}-${i}`}
+            className={`cmd is-placed ${i < cursor ? 'is-done' : ''} ${
+              running && i === cursor - 1 ? 'is-now' : ''
+            }`}
+          >
             <AssetImg src={COMMANDS[id].file} fallback={COMMANDS[id].emoji} className="cmd-img" />
           </div>
         ))}
-        <div className="cmd is-slot">
-          <AssetImg src={COMMANDS[expected].file} fallback={COMMANDS[expected].emoji} className="cmd-img" />
-        </div>
+        {!running && strip.length < 8 ? <div className="cmd is-slot" /> : null}
       </div>
       <div className="bank">
         {bank.map((id) => (
-          <button key={id} type="button" className="cmd" onClick={() => onTry(id)}>
+          <button
+            key={id}
+            type="button"
+            className={`cmd ${hint === id ? 'is-hint' : ''}`}
+            onClick={() => onAdd(id)}
+          >
             <AssetImg src={COMMANDS[id].file} fallback={COMMANDS[id].emoji} className="cmd-img" />
           </button>
         ))}
         <button type="button" className="cmd undo" onClick={onUndo} aria-label="cofnij">
           🔙
+        </button>
+        <button
+          type="button"
+          className="cmd play"
+          onClick={onPlay}
+          disabled={!playEnabled}
+          aria-label="start"
+        >
+          ▶
         </button>
       </div>
     </div>
