@@ -6,16 +6,24 @@ interface Props {
   className?: string;
 }
 
+function withBase(src: string): string {
+  if (/^(https?:|data:)/i.test(src)) return src;
+  const base = import.meta.env.BASE_URL || '/';
+  const path = src.replace(/^\//, '');
+  return `${base.endsWith('/') ? base : `${base}/`}${path}`;
+}
+
 export function AssetImg({ src, fallback, className }: Props): JSX.Element {
-  const [ok, setOk] = useState(true);
-  if (!ok) return <span className={className}>{fallback}</span>;
+  const href = withBase(src);
+  const [failedFor, setFailedFor] = useState<string | null>(null);
+  if (failedFor === href) return <span className={className}>{fallback}</span>;
   return (
     <img
-      src={src}
+      src={href}
       alt=""
       className={className}
       draggable={false}
-      onError={() => setOk(false)}
+      onError={() => setFailedFor(href)}
     />
   );
 }
