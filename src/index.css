@@ -172,9 +172,9 @@ button {
 }
 
 .ride-world {
-  flex: 1 1 34%;
-  min-height: 150px;
-  max-height: 42vh;
+  flex: 1 1 38%;
+  min-height: 168px;
+  max-height: 46vh;
   position: relative;
   overflow: hidden;
   border: 4px solid var(--ink);
@@ -189,10 +189,20 @@ button {
 }
 .sky {
   position: absolute;
-  inset: 0 0 28% 0;
+  inset: 0 0 24% 0;
   background:
     radial-gradient(ellipse 80% 70% at 18% 30%, rgba(255,255,255,0.45), transparent 60%),
-    linear-gradient(180deg, #3a6adf 0%, #7ec8f8 58%, #b8e4a4 100%);
+    linear-gradient(180deg, #3a6adf 0%, #7ec8f8 52%, #c8ec9a 100%);
+}
+.sun {
+  position: absolute;
+  top: 10%;
+  right: 12%;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fff6c4, #fce874 55%, #f0b020);
+  box-shadow: 0 0 0 8px rgba(252, 232, 116, 0.28);
 }
 .cloud {
   position: absolute;
@@ -205,46 +215,131 @@ button {
   box-shadow: 18px 6px 0 -4px #fff, -16px 4px 0 -6px #fff;
 }
 .cloud.c1 { top: 12%; left: 8%; }
-.cloud.c2 { top: 22%; right: 12%; width: 80px; }
+.cloud.c2 { top: 22%; right: 18%; width: 80px; }
 .cloud.c3 { top: 8%; left: 48%; opacity: 0.6; }
 .hills {
   position: absolute;
   left: -8%;
   right: -8%;
-  bottom: 22%;
-  height: 28%;
+  bottom: 20%;
+  height: 30%;
   background:
     radial-gradient(ellipse 42% 90% at 22% 100%, #3fa85a 0 70%, transparent 71%),
     radial-gradient(ellipse 50% 100% at 78% 100%, #2f8f48 0 72%, transparent 73%);
 }
 .grass {
-  height: 18px;
+  height: 16px;
   flex-shrink: 0;
   background:
     repeating-linear-gradient(90deg, #3cb85a 0 10px, #2f9a48 10px 18px);
   border-top: 4px solid var(--ink);
   z-index: 2;
 }
-.track-row {
+.track-line {
   position: relative;
   z-index: 3;
   display: flex;
   align-items: flex-end;
-  justify-content: center;
-  gap: 6px;
-  padding: 8px 10px 6px;
+  justify-content: stretch;
+  gap: 0;
+  padding: 0 6px 4px;
+  min-height: 92px;
 }
-.track-row::before {
-  content: '';
+.seg {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 64px;
+  display: grid;
+  place-items: end center;
+}
+.seg-bed {
   position: absolute;
-  left: 10%;
-  right: 10%;
-  bottom: 22px;
-  height: 12px;
-  background: repeating-linear-gradient(90deg, #5a4028 0 10px, #d2b48c 10px 16px);
-  border-radius: 4px;
+  left: -1px;
+  right: -1px;
+  bottom: 8px;
+  height: 22px;
+  background:
+    linear-gradient(#d8e0ea 0 3px, transparent 3px 7px, #d8e0ea 7px 10px, transparent 10px),
+    repeating-linear-gradient(90deg, #6b4423 0 7px, #c4a574 7px 14px);
+  background-color: #5a3a22;
+  border-top: 2px solid #3d2414;
   z-index: 0;
 }
+.ride-world.is-kart .seg-bed {
+  height: 18px;
+  background: repeating-linear-gradient(90deg, #3a3a44 0 10px, #fce874 10px 14px, #3a3a44 14px 24px);
+  border-top: 2px solid #181028;
+}
+.seg.is-gap .seg-bed {
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+.seg.is-gap .seg-bed::before,
+.seg.is-gap .seg-bed::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  width: 10px;
+  height: 22px;
+  background:
+    linear-gradient(#d8e0ea 0 3px, transparent 3px 7px, #d8e0ea 7px 10px, transparent 10px),
+    #5a3a22;
+}
+.seg.is-gap .seg-bed::before { left: 0; }
+.seg.is-gap .seg-bed::after { right: 0; }
+.pit {
+  display: block;
+  width: 72%;
+  height: 28px;
+  margin-bottom: 6px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 35%, #4a2e18, #12080a 72%);
+  box-shadow: inset 0 8px 10px rgba(0,0,0,0.55), 0 0 0 3px #3d2414;
+  z-index: 1;
+}
+.seg-art {
+  position: relative;
+  z-index: 1;
+  width: 112%;
+  max-width: none;
+  height: 58px;
+  object-fit: cover;
+  object-position: center 70%;
+  margin: 0 -6%;
+  filter: drop-shadow(0 3px 0 rgba(0,0,0,0.2));
+}
+.seg-start .seg-art,
+.seg.is-start .seg-art {
+  object-fit: contain;
+  height: 62px;
+}
+.seg.is-building {
+  height: 108px;
+}
+.seg.is-building .seg-art {
+  height: 104px;
+  object-fit: contain;
+  object-position: center bottom;
+  width: 100%;
+  margin: 0;
+}
+.seg-gate .seg-art,
+.seg-bend .seg-art {
+  object-fit: contain;
+  height: 70px;
+}
+.seg.is-open .seg-art {
+  transform: translateY(-10px) rotate(-18deg);
+  transform-origin: left bottom;
+}
+.seg.is-bend-ghost .seg-art {
+  opacity: 0.38;
+  filter: grayscale(0.35);
+}
+.seg.is-on .seg-bed { opacity: 1; }
+.seg.has-train { z-index: 4; }
 
 .program {
   display: flex;
@@ -333,7 +428,7 @@ button {
 
 @keyframes fall {
   to {
-    transform: translateY(40px) rotate(24deg);
+    transform: translateX(-50%) translateY(40px) rotate(24deg);
     opacity: 0.2;
   }
 }
@@ -399,6 +494,7 @@ button {
 .plan-img,
 .tiny-img,
 .cell-img,
+.seg-art,
 .loco-img,
 .loco-face,
 .bull-img,
@@ -494,59 +590,20 @@ button {
 .mission-card:active { transform: translateY(3px); box-shadow: 0 3px 0 var(--ink); }
 .mission-img { width: 96px; height: 76px; object-fit: contain; }
 .mission-title { font-size: 16px; font-weight: 700; }
-.cell.is-start {
-  background: linear-gradient(#8effa8, #34c05e);
-  box-shadow: 0 5px 0 #1f7a38;
-}
-.cell.is-bend-ghost { opacity: 0.45; filter: grayscale(0.25); }
-.hole-mark {
-  display: block;
-  width: 70%;
-  height: 70%;
-  border-radius: 50%;
-  background: radial-gradient(circle at 50% 35%, #4a2e18, #181028 70%);
-  box-shadow: inset 0 8px 8px rgba(0,0,0,0.45);
-}
-.cell {
-  position: relative;
-  z-index: 1;
-  width: min(18vw, 100px);
-  height: min(18vw, 100px);
-  background: #2868a0;
-  border: 4px solid var(--ink);
-  border-radius: 14px;
-  display: grid;
-  place-items: center;
-}
-.cell.is-on {
-  background: linear-gradient(#ffe98a, #e2c04a);
-  box-shadow: 0 5px 0 #8a6a18;
-}
-.cell.is-hole {
-  background: linear-gradient(#5a3a22, #2a1810);
-  box-shadow: inset 0 8px 10px rgba(0,0,0,0.45);
-  opacity: 1;
-}
-.cell.is-goal {
-  box-shadow: 0 0 0 4px var(--yellow), 0 5px 0 #8a6a18;
-}
-.cell-img {
-  width: 88%;
-  height: 88%;
-  z-index: 1;
-}
 
 .loco {
   position: absolute;
-  top: -52px;
+  left: 50%;
+  bottom: 26px;
   display: grid;
   place-items: center;
   filter: drop-shadow(0 4px 0 rgba(0,0,0,0.25));
   animation: loco-idle 1.6s ease-in-out infinite;
+  z-index: 5;
 }
 @keyframes loco-idle {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-3px); }
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-4px); }
 }
 .loco.is-paused {
   filter: saturate(1.4) drop-shadow(0 4px 0 rgba(0,0,0,0.25));

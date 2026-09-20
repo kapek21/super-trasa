@@ -16,7 +16,7 @@ export const COMMANDS: Record<CommandId, CommandDef> = {
   gate: { id: 'gate', emoji: '🚧', file: '/assets/commands/cmd_wait_gate.png', label: 'SZLABAN' },
 };
 
-export type BoardCell = 'start' | 'hole' | 'bend' | 'station' | 'tv' | 'gate' | 'road' | 'goal';
+export type BoardCell = 'start' | 'laid' | 'hole' | 'bend' | 'station' | 'tv' | 'gate' | 'road' | 'goal';
 
 export type FailKind = 'no-brick' | 'gap' | 'gate' | 'wrong-turn' | 'no-connect' | 'extra';
 
@@ -52,7 +52,7 @@ export const TRACK_LEVELS: readonly LevelDef[] = [
     goalFallback: '📺',
     vehicle: 'train',
     bank: ['pick', 'place', 'connect', 'crane'],
-    cells: ['start', 'hole', 'hole', 'tv'],
+    cells: ['start', 'laid', 'hole', 'laid', 'hole', 'tv'],
     needHoles: 2,
     needBends: 0,
     needsGate: false,
@@ -65,7 +65,7 @@ export const TRACK_LEVELS: readonly LevelDef[] = [
     goalFallback: '🦇',
     vehicle: 'train',
     bank: ['pick', 'place', 'connect', 'turn'],
-    cells: ['start', 'hole', 'hole', 'station'],
+    cells: ['start', 'laid', 'hole', 'laid', 'hole', 'station'],
     needHoles: 2,
     needBends: 0,
     needsGate: false,
@@ -78,7 +78,7 @@ export const TRACK_LEVELS: readonly LevelDef[] = [
     goalFallback: '📺',
     vehicle: 'train',
     bank: ['pick', 'place', 'gate', 'connect', 'turn'],
-    cells: ['start', 'hole', 'gate', 'tv'],
+    cells: ['start', 'laid', 'hole', 'gate', 'laid', 'tv'],
     needHoles: 1,
     needBends: 0,
     needsGate: true,
@@ -91,7 +91,7 @@ export const TRACK_LEVELS: readonly LevelDef[] = [
     goalFallback: '🕸️',
     vehicle: 'train',
     bank: ['pick', 'place', 'turn', 'connect', 'crane'],
-    cells: ['start', 'hole', 'bend', 'station'],
+    cells: ['start', 'laid', 'hole', 'bend', 'station'],
     needHoles: 1,
     needBends: 1,
     needsGate: false,
@@ -104,7 +104,7 @@ export const TRACK_LEVELS: readonly LevelDef[] = [
     goalFallback: '🌲',
     vehicle: 'train',
     bank: ['pick', 'place', 'turn', 'gate', 'connect'],
-    cells: ['start', 'hole', 'bend', 'gate', 'goal'],
+    cells: ['start', 'laid', 'hole', 'bend', 'gate', 'goal'],
     needHoles: 1,
     needBends: 1,
     needsGate: true,
@@ -119,7 +119,7 @@ export const GOKART_LEVEL: LevelDef = {
   goalFallback: '🌈',
   vehicle: 'kart',
   bank: ['pick', 'place', 'turn', 'connect', 'crane'],
-  cells: ['start', 'road', 'bend', 'goal'],
+  cells: ['start', 'laid', 'road', 'bend', 'goal'],
   needHoles: 1,
   needBends: 1,
   needsGate: false,
@@ -222,4 +222,48 @@ export function hintCommand(program: readonly CommandId[], level: LevelDef): Com
 
 export function laidCount(state: StepState): number {
   return state.holes + state.bends;
+}
+
+/** Indeks, do którego pociąg może dojechać po aktualnie ułożonym torze. */
+export function trainCell(
+  cells: readonly BoardCell[],
+  holes: number,
+  bends: number,
+  connected: boolean,
+): number {
+  let h = 0;
+  let b = 0;
+  let last = 0;
+  for (let i = 0; i < cells.length; i++) {
+    const c = cells[i]!;
+    if (c === 'start' || c === 'laid') {
+      last = i;
+      continue;
+    }
+    if (c === 'hole' || c === 'road') {
+      if (h < holes) {
+        last = i;
+        h += 1;
+        continue;
+      }
+      break;
+    }
+    if (c === 'bend') {
+      if (b < bends) {
+        last = i;
+        b += 1;
+        continue;
+      }
+      break;
+    }
+    if (c === 'gate') {
+      last = i;
+      continue;
+    }
+    if (c === 'tv' || c === 'station' || c === 'goal') {
+      if (connected) last = i;
+      break;
+    }
+  }
+  return last;
 }

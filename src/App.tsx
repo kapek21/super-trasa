@@ -10,8 +10,8 @@ import {
   ALL_LEVELS,
   FAIL_FACE,
   hintCommand,
-  laidCount,
   stepTrack,
+  trainCell,
   type CommandId,
   type FailKind,
   type LevelDef,
@@ -46,20 +46,9 @@ export function App(): JSX.Element {
     connected: false,
     fail: null,
   };
-  const laid = laidCount(now);
-  const buildables = level.cells
-    .map((c, i) => ({ c, i }))
-    .filter(({ c }) => c === 'hole' || c === 'bend' || c === 'road');
-  const lastBuilt = laid > 0 ? buildables[Math.min(laid, buildables.length) - 1]?.i ?? 0 : 0;
-  const destIndex = level.cells.findIndex((c) => c === 'tv' || c === 'station' || c === 'goal');
   const programmed = strip.length ? steps[steps.length - 1]! : now;
   const hand = phase === 'program' ? programmed.bricks : now.bricks;
-  const trainAt =
-    phase === 'program'
-      ? 0
-      : now.connected && destIndex >= 0
-        ? destIndex
-        : lastBuilt;
+  const trainAt = phase === 'program' ? 0 : trainCell(level.cells, now.holes, now.bends, now.connected);
 
   const startLevel = (next: LevelDef): void => {
     setLevel(next);
@@ -158,6 +147,7 @@ export function App(): JSX.Element {
             trainAt={trainAt}
             crashed={phase === 'fail'}
             paused={Boolean(now.gateOpen && phase === 'run')}
+            gateOpen={now.gateOpen}
             vehicle={level.vehicle}
             goalFile={level.goalFile}
             goalFallback={level.goalFallback}

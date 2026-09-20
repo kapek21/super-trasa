@@ -8,6 +8,7 @@ interface Props {
   trainAt: number;
   crashed: boolean;
   paused: boolean;
+  gateOpen: boolean;
   vehicle: 'train' | 'kart';
   goalFile: string;
   goalFallback: string;
@@ -18,19 +19,16 @@ interface Props {
 function artFor(
   cell: BoardCell,
   filled: boolean,
+  vehicle: 'train' | 'kart',
   goalFile: string,
   goalFallback: string,
 ): { src: string; fallback: string } {
-  if (cell === 'hole') {
-    return filled
-      ? { src: '/assets/tracks/track_straight.png', fallback: '➖' }
-      : { src: '/assets/tracks/track_buffer.png', fallback: '🕳️' };
-  }
-  if (cell === 'road') {
-    return filled
+  const straight =
+    vehicle === 'kart'
       ? { src: '/assets/tracks/road_straight.png', fallback: '🛣️' }
-      : { src: '/assets/tracks/track_buffer.png', fallback: '🕳️' };
-  }
+      : { src: '/assets/tracks/track_straight.png', fallback: '➖' };
+  if (cell === 'laid') return straight;
+  if (cell === 'hole' || cell === 'road') return filled ? straight : { src: '', fallback: '' };
   if (cell === 'bend') {
     return { src: '/assets/tracks/track_curve.png', fallback: '↩️' };
   }
@@ -40,17 +38,10 @@ function artFor(
     if (goalFile.includes('poke')) return { src: '/assets/stations/station_poke_woods.png', fallback: '🌲' };
     return { src: '/assets/stations/station_batcave.png', fallback: '🦇' };
   }
-  const map: Record<BoardCell, { src: string; fallback: string }> = {
-    start: { src: '/assets/tracks/track_buffer.png', fallback: '🏁' },
-    hole: { src: '/assets/tracks/track_buffer.png', fallback: '🕳️' },
-    bend: { src: '/assets/tracks/track_curve.png', fallback: '↩️' },
-    station: { src: '/assets/stations/station_batcave.png', fallback: '🦇' },
-    tv: { src: '/assets/stations/station_tv.png', fallback: '📺' },
-    gate: { src: '/assets/tracks/gate_rail.png', fallback: '🚧' },
-    road: { src: '/assets/tracks/road_straight.png', fallback: '🛣️' },
-    goal: { src: goalFile, fallback: goalFallback },
-  };
-  return map[cell];
+  if (cell === 'start') return { src: '/assets/tracks/track_buffer.png', fallback: '🏁' };
+  if (cell === 'tv') return { src: '/assets/stations/station_tv.png', fallback: '📺' };
+  if (cell === 'gate') return { src: '/assets/tracks/gate_rail.png', fallback: '🚧' };
+  return straight;
 }
 
 export function RideBoard({
@@ -60,6 +51,7 @@ export function RideBoard({
   trainAt,
   crashed,
   paused,
+  gateOpen,
   vehicle,
   goalFile,
   goalFallback,
@@ -69,14 +61,15 @@ export function RideBoard({
   let holeN = 0;
   let bendN = 0;
   return (
-    <div className={`ride-world ${crashed ? 'is-crash' : ''}`}>
+    <div className={`ride-world is-${vehicle} ${crashed ? 'is-crash' : ''}`}>
       <div className="sky" aria-hidden>
+        <i className="sun" />
         <i className="cloud c1" />
         <i className="cloud c2" />
         <i className="cloud c3" />
       </div>
       <div className="hills" aria-hidden />
-      <div className="track-row">
+      <div className="track-line">
         {cells.map((cell, i) => {
           let filled = true;
           if (cell === 'hole' || cell === 'road') {
@@ -87,18 +80,32 @@ export function RideBoard({
             bendN += 1;
           }
           const isBuild = cell === 'hole' || cell === 'bend' || cell === 'road';
-          const art = artFor(cell, filled, goalFile, goalFallback);
+          const art = artFor(cell, filled, vehicle, goalFile, goalFallback);
           const shown = !isBuild || filled;
-          const isGoal = cell === 'tv' || cell === 'station' || cell === 'goal' || cell === 'gate';
+          const isBuilding = cell === 'tv' || cell === 'station' || cell === 'goal';
           return (
             <div
               key={i}
-              className={`cell ${shown ? 'is-on' : 'is-hole'} ${isGoal ? 'is-goal' : ''} ${cell === 'start' ? 'is-start' : ''} ${cell === 'bend' && !filled ? 'is-bend-ghost' : ''}`}
+              className={[
+                'seg',
+                `seg-${cell}`,
+                shown ? 'is-on' : 'is-gap',
+                isBuilding ? 'is-building' : '',
+                cell === 'start' ? 'is-start' : '',
+                cell === 'bend' && !filled ? 'is-bend-ghost' : '',
+                cell === 'gate' && gateOpen ? 'is-open' : '',
+                trainAt === i ? 'has-train' : '',
+              ]
+                .filter(Boolean)
+                .join(' ')}
             >
+              <span className="seg-bed" aria-hidden />
               {shown || cell === 'bend' ? (
-                <AssetImg src={art.src} fallback={art.fallback} className="cell-img" />
+                art.src ? (
+                  <AssetImg src={art.src} fallback={art.fallback} className="seg-art" />
+                ) : null
               ) : (
-                <span className="hole-mark" />
+                <span className="pit" />
               )}
               {trainAt === i && (
                 <div className={`loco ${paused ? 'is-paused' : ''} ${crashed ? 'is-crash' : ''}`}>
