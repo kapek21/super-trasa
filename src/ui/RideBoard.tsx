@@ -69,47 +69,56 @@ export function RideBoard({
   let holeN = 0;
   let bendN = 0;
   return (
-    <div className={`ride-host ride-html ${crashed ? 'is-crash' : ''}`}>
-      {cells.map((cell, i) => {
-        let filled = true;
-        if (cell === 'hole' || cell === 'road') {
-          filled = holeN < holes;
-          holeN += 1;
-        } else if (cell === 'bend') {
-          filled = bendN < bends;
-          bendN += 1;
-        }
-        const isBuild = cell === 'hole' || cell === 'bend' || cell === 'road';
-        const art = artFor(cell, filled, goalFile, goalFallback);
-        const shown = !isBuild || filled;
-        const isGoal = cell === 'tv' || cell === 'station' || cell === 'goal' || cell === 'gate';
-        return (
-          <div
-            key={i}
-            className={`cell ${shown ? 'is-on' : 'is-hole'} ${isGoal ? 'is-goal' : ''} ${cell === 'start' ? 'is-start' : ''} ${cell === 'bend' && !filled ? 'is-bend-ghost' : ''}`}
-          >
-            {shown || cell === 'bend' ? (
-              <AssetImg src={art.src} fallback={art.fallback} className="cell-img" />
-            ) : (
-              <span className="hole-mark">🕳️</span>
-            )}
-            {trainAt === i && (
-              <div className={`loco ${paused ? 'is-paused' : ''} ${crashed ? 'is-crash' : ''}`}>
-                <AssetImg
-                  src={vehicle === 'kart' ? '/assets/vehicles/gokart_red.png' : '/assets/vehicles/train_engine.png'}
-                  fallback={vehicle === 'kart' ? '🏎️' : '🚂'}
-                  className="loco-img"
-                />
-                {driverSrc ? (
-                  <AssetImg src={driverSrc} fallback={driverEmoji} className="loco-face" />
-                ) : (
-                  <span className="loco-face">{driverEmoji}</span>
-                )}
-              </div>
-            )}
-          </div>
-        );
-      })}
+    <div className={`ride-world ${crashed ? 'is-crash' : ''}`}>
+      <div className="sky" aria-hidden>
+        <i className="cloud c1" />
+        <i className="cloud c2" />
+        <i className="cloud c3" />
+      </div>
+      <div className="hills" aria-hidden />
+      <div className="track-row">
+        {cells.map((cell, i) => {
+          let filled = true;
+          if (cell === 'hole' || cell === 'road') {
+            filled = holeN < holes;
+            holeN += 1;
+          } else if (cell === 'bend') {
+            filled = bendN < bends;
+            bendN += 1;
+          }
+          const isBuild = cell === 'hole' || cell === 'bend' || cell === 'road';
+          const art = artFor(cell, filled, goalFile, goalFallback);
+          const shown = !isBuild || filled;
+          const isGoal = cell === 'tv' || cell === 'station' || cell === 'goal' || cell === 'gate';
+          return (
+            <div
+              key={i}
+              className={`cell ${shown ? 'is-on' : 'is-hole'} ${isGoal ? 'is-goal' : ''} ${cell === 'start' ? 'is-start' : ''} ${cell === 'bend' && !filled ? 'is-bend-ghost' : ''}`}
+            >
+              {shown || cell === 'bend' ? (
+                <AssetImg src={art.src} fallback={art.fallback} className="cell-img" />
+              ) : (
+                <span className="hole-mark" />
+              )}
+              {trainAt === i && (
+                <div className={`loco ${paused ? 'is-paused' : ''} ${crashed ? 'is-crash' : ''}`}>
+                  <AssetImg
+                    src={vehicle === 'kart' ? '/assets/vehicles/gokart_red.png' : '/assets/vehicles/train_engine.png'}
+                    fallback={vehicle === 'kart' ? '🏎️' : '🚂'}
+                    className="loco-img"
+                  />
+                  {driverSrc ? (
+                    <AssetImg src={driverSrc} fallback={driverEmoji} className="loco-face" />
+                  ) : (
+                    <span className="loco-face">{driverEmoji}</span>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+      <div className="grass" aria-hidden />
     </div>
   );
 }
