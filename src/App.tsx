@@ -7,10 +7,10 @@ import {
   type SavedDriver,
 } from './drivers';
 import {
+  ALL_LEVELS,
   FAIL_FACE,
-  GOKART_LEVEL,
-  TRACK_LEVELS,
   hintCommand,
+  laidCount,
   stepTrack,
   type CommandId,
   type FailKind,
@@ -24,34 +24,45 @@ import { RideBoard } from './ui/RideBoard';
 type Phase = 'driver' | 'hub' | 'program' | 'run' | 'fail' | 'win';
 
 const STEP_MS = 700;
-const MAX_STRIP = 8;
+const MAX_STRIP = 12;
 
 export function App(): JSX.Element {
   const [driver, setDriver] = useState<SavedDriver | null>(() => loadDriver());
   const [phase, setPhase] = useState<Phase>(loadDriver() ? 'hub' : 'driver');
-  const [level, setLevel] = useState<LevelDef>(TRACK_LEVELS[0]!);
+  const [level, setLevel] = useState<LevelDef>(ALL_LEVELS[0]!);
   const [strip, setStrip] = useState<CommandId[]>([]);
   const [cursor, setCursor] = useState(0);
   const [fail, setFail] = useState<FailKind | null>(null);
   const [hint, setHint] = useState<CommandId | null>(null);
-  const [kart, setKart] = useState(false);
 
   const face = driver ? driverEmoji(driver) : '🚂';
   const faceSrc = driver ? driverSrc(driver) : null;
   const steps = stepTrack(strip, level);
   const now = steps[Math.max(0, cursor - 1)] ?? {
-    laid: 0,
+    holes: 0,
+    bends: 0,
     bricks: 0,
-    turns: 0,
     gateOpen: false,
     connected: false,
     fail: null,
   };
-  const trainAt = now.connected ? level.cells.length - 1 : Math.max(-1, now.laid - 1);
+  const laid = laidCount(now);
+  const buildables = level.cells
+    .map((c, i) => ({ c, i }))
+    .filter(({ c }) => c === 'hole' || c === 'bend' || c === 'road');
+  const lastBuilt = laid > 0 ? buildables[Math.min(laid, buildables.length) - 1]?.i ?? 0 : 0;
+  const destIndex = level.cells.findIndex((c) => c === 'tv' || c === 'station' || c === 'goal');
+  const programmed = strip.length ? steps[steps.length - 1]! : now;
+  const hand = phase === 'program' ? programmed.bricks : now.bricks;
+  const trainAt =
+    phase === 'program'
+      ? 0
+      : now.connected && destIndex >= 0
+        ? destIndex
+        : lastBuilt;
 
-  const startLevel = (next: LevelDef, asKart: boolean): void => {
+  const startLevel = (next: LevelDef): void => {
     setLevel(next);
-    setKart(asKart);
     setStrip([]);
     setCursor(0);
     setFail(null);
@@ -121,50 +132,39 @@ export function App(): JSX.Element {
 
       {phase === 'hub' && (
         <div className="hub">
-          <AssetImg src="/assets/vehicles/train_engine.png" fallback="🚂" className="hub-hero" />
-          <p className="goal-tag">🎯</p>
-          {TRACK_LEVELS.map((lvl) => (
-            <button key={lvl.id} type="button" className="go-btn" onClick={() => startLevel(lvl, false)}>
-              {lvl.titleEmoji}
-            </button>
-          ))}
-          <button type="button" className="go-btn gokart" onClick={() => startLevel(GOKART_LEVEL, true)}>
-            <AssetImg src="/assets/vehicles/gokart_red.png" fallback="🏎️" className="tiny-img" />
-          </button>
+          <p className="goal-tag">Wybierz trasę</p>
+          <div className="mission-grid">
+            {ALL_LEVELS.map((lvl) => (
+              <button key={lvl.id} type="button" className="mission-card" onClick={() => startLevel(lvl)}>
+                <AssetImg src={lvl.goalFile} fallback={lvl.goalFallback} className="mission-img" />
+                <span className="mission-title">{lvl.title}</span>
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
       {(phase === 'program' || phase === 'run' || phase === 'fail' || phase === 'win') && (
         <>
-          <p className="goal-tag">🎯 {level.titleEmoji}</p>
-          {kart ? (
-            <div className={`kart-preview ${phase === 'fail' ? 'is-crash' : ''}`}>
-              <AssetImg
-                src="/assets/vehicles/gokart_red.png"
-                fallback="🏎️"
-                className={`kart-build ${now.laid > 0 ? 'is-on' : ''}`}
-              />
-              <AssetImg
-                src="/assets/vehicles/gokart_blue.png"
-                fallback="🏎️"
-                className={`kart-build ${now.turns > 0 ? 'is-on' : ''}`}
-              />
-              {phase === 'fail' && fail ? <span className="fail-face">{FAIL_FACE[fail]}</span> : null}
-            </div>
-          ) : (
-            <>
-              <RideBoard
-                cells={level.cells}
-                laid={now.laid}
-                trainAt={phase === 'program' ? -1 : trainAt}
-                crashed={phase === 'fail'}
-                paused={Boolean(now.gateOpen && phase === 'run')}
-                driverEmoji={face}
-                driverSrc={faceSrc}
-              />
-              {phase === 'fail' && fail ? <p className="fail-banner">{FAIL_FACE[fail]}</p> : null}
-            </>
-          )}
+          <div className="mission">
+            <span className="mission-go">jedź do</span>
+            <AssetImg src={level.goalFile} fallback={level.goalFallback} className="mission-goal" />
+            {hand > 0 ? <span className="hand">📦×{hand}</span> : null}
+          </div>
+          <RideBoard
+            cells={level.cells}
+            holes={phase === 'program' ? 0 : now.holes}
+            bends={phase === 'program' ? 0 : now.bends}
+            trainAt={trainAt}
+            crashed={phase === 'fail'}
+            paused={Boolean(now.gateOpen && phase === 'run')}
+            vehicle={level.vehicle}
+            goalFile={level.goalFile}
+            goalFallback={level.goalFallback}
+            driverEmoji={face}
+            driverSrc={faceSrc}
+          />
+          {phase === 'fail' && fail ? <p className="fail-banner">{FAIL_FACE[fail]}</p> : null}
 
           {(phase === 'program' || phase === 'run') && (
             <CommandStrip
@@ -174,6 +174,7 @@ export function App(): JSX.Element {
               cursor={cursor}
               running={phase === 'run'}
               playEnabled={phase === 'program' && strip.length > 0}
+              connectFile={level.goalFile}
               onAdd={addCmd}
               onUndo={() => {
                 if (phase !== 'program') return;
@@ -221,13 +222,7 @@ export function App(): JSX.Element {
 
           {phase === 'win' && (
             <div className="win">
-              {kart ? (
-                <div className="kart" style={{ animationDuration: '3.2s' }}>
-                  <AssetImg src="/assets/vehicles/gokart_red.png" fallback="🏎️" className="hub-hero" />
-                </div>
-              ) : (
-                <p>🎉📺</p>
-              )}
+              <p>🎉</p>
               <button type="button" className="go-btn" onClick={() => setPhase('hub')}>
                 🏠
               </button>

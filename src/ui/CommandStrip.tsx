@@ -9,6 +9,7 @@ interface Props {
   cursor?: number;
   running?: boolean;
   playEnabled: boolean;
+  connectFile?: string;
   onAdd(cmd: CommandId): void;
   onUndo(): void;
   onPlay(): void;
@@ -22,10 +23,13 @@ export function CommandStrip({
   cursor = 0,
   running,
   playEnabled,
+  connectFile,
   onAdd,
   onUndo,
   onPlay,
 }: Props): JSX.Element {
+  const art = (id: CommandId): string => (id === 'connect' && connectFile ? connectFile : COMMANDS[id].file);
+
   return (
     <div className="program">
       <div className={`strip ${shake ? 'is-shake' : ''}`} aria-label="program">
@@ -36,10 +40,11 @@ export function CommandStrip({
               running && i === cursor - 1 ? 'is-now' : ''
             }`}
           >
-            <AssetImg src={COMMANDS[id].file} fallback={COMMANDS[id].emoji} className="cmd-img" />
+            <AssetImg src={art(id)} fallback={COMMANDS[id].emoji} className="cmd-img" />
+            <span className="cmd-label">{COMMANDS[id].label}</span>
           </div>
         ))}
-        {!running && strip.length < 8 ? <div className="cmd is-slot" /> : null}
+        {!running && strip.length < 12 ? <div className="cmd is-slot" /> : null}
       </div>
       <div className="bank">
         {bank.map((id) => (
@@ -49,7 +54,8 @@ export function CommandStrip({
             className={`cmd ${hint === id ? 'is-hint' : ''}`}
             onClick={() => onAdd(id)}
           >
-            <AssetImg src={COMMANDS[id].file} fallback={COMMANDS[id].emoji} className="cmd-img" />
+            <AssetImg src={art(id)} fallback={COMMANDS[id].emoji} className="cmd-img" />
+            <span className="cmd-label">{COMMANDS[id].label}</span>
           </button>
         ))}
         <button type="button" className="cmd undo" onClick={onUndo} aria-label="cofnij">
